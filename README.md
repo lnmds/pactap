@@ -16,3 +16,13 @@ it became more of a "learning" project.
 
 we will, very likely, use http://linuxbrew.sh/ over this project.
 
+## Installing
+
+```bash
+# make sure $GOPATH/bin is in your path
+go install github.com/lnmds/pactap
+
+mkdir -p ~/.pactap
+
+# ??? profit ???
+```

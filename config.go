@@ -7,9 +7,16 @@ import (
 )
 
 const defaultConfig string = `
+# pactap's main configuration file
+
 [main]
+# Where should things like /bin and /lib go to?
 MainPath = "~/.pactap"
+
+# Enable debugging
 Debug = false
+
+# Packages to ignore updates from
 Ignore = []
 
 # Only download repo patches
@@ -20,20 +27,20 @@ SlowMode = true
 CheckIntegrity = true
 CheckSignature = false
 
+# Example repository information
 [repo]
     [repo.core]
     Remote = "https://pactap.lnmds.me"
 
+    # Example of a repository that uses a mirrorlist file
     [repo.community]
-    RemoteList = "/etc/pactap/mirrorlist"
+    RemoteList = "file:///etc/pactap/mirrorlist"
 
     # In the case you want some binary-only
-    # package repository
+    #  package repository but don't want to host
+    #  it with a full vps or something
     [repo.bin]
     Remote = "https://localhost:6969"
-
-    # [repo.myAss] # this can be any path
-    # Remote = file://~/pactap/myass
 `
 
 type Repo struct {
