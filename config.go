@@ -1,8 +1,9 @@
 package main
 
 import (
-    "github.com/BurntSushi/toml"
     "io/ioutil"
+    "log"
+    "github.com/BurntSushi/toml"
 )
 
 const defaultConfig string = `
@@ -67,9 +68,13 @@ type Main struct {
 func ReadConfig(path string) *Main {
     var c Main
 
+    log.Printf("Loading config from '%s'", path)
     data, err := ioutil.ReadFile(path)
     if err != nil {
-        panic(err)
+        log.Printf("Using fallback")
+
+        data = []byte(defaultConfig)
+        _ = ioutil.WriteFile(path, data, 0755)
     }
 
     if _, err := toml.Decode(string(data), &c); err != nil {
