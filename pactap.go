@@ -80,6 +80,7 @@ func main(){
     fmt.Println(*conf)
 
     // TODO: We should start reading our db files
+    updateRepos(conf)
 
     // TODO: operate upon args
 }

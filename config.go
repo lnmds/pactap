@@ -90,3 +90,4 @@ func ReadConfig(path string) *Main {
 
     return &c
 }
+
