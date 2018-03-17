@@ -3,7 +3,10 @@ package main
 import (
     "fmt"
     "os"
+    "path/filepath"
+
     "github.com/jessevdk/go-flags"
+    "github.com/mitchellh/go-homedir"
 )
 
 const VERSION string = "0.0.1"
@@ -68,10 +71,17 @@ func main(){
     fmt.Printf("Opt Query %t\n", opts.Query)
     fmt.Printf("Opt Remove %t\n", opts.Remove)
 
-    // TODO: We should start reading our config files
-    conf := ReadConfig("~/.pactap/config.toml")
+    homedir, err := homedir.Dir()
+    if err != nil {
+        panic(err)
+    }
+
+    conf := ReadConfig(filepath.Join(homedir, ".pactap/config.toml"))
     fmt.Println(*conf)
+
     // TODO: We should start reading our db files
+
+    // TODO: operate upon args
 }
 
 
