@@ -26,3 +26,10 @@ mkdir -p ~/.pactap
 
 # ??? profit ???
 ```
+
+## Updating
+
+```bash
+go get -u github.com/lnmds/pactap
+go install github.com/lnmds/pactap
+```
