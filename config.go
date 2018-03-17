@@ -29,6 +29,9 @@ CheckSignature = false
 
 # Example repository information
 [repo]
+    [repo.local]
+    Remote = "file:///home/luna/pactap/repo.db"
+
     [repo.core]
     Remote = "https://pactap.lnmds.me"
 

@@ -5,6 +5,8 @@ import (
     "fmt"
     "path/filepath"
     "log"
+    "errors"
+    "net/http"
     "strings"
 )
 
@@ -44,9 +46,34 @@ func getRemoteType(remote string) RemoteType {
     }
 }
 
-func downloadRemote(remoteType RemoteType, remote string) string {
-    log.Printf("[download:remote] '%s' (fake download)", remote)
-    return ""
+func downloadRemote(remoteType RemoteType, remote string) (string, error) {
+    log.Printf("[download:remote] '%s'", remote)
+
+    if remoteType == FILE {
+        data, err := ioutil.ReadFile(remote)
+        if err != nil {
+            return "", errors.New("Failure reading from remote path")
+        }
+        return string(data), err
+
+    } else if remoteType == HTTP || remoteType == HTTPS{
+        resp, err := http.Get(remote)
+        if err != nil {
+            log.Printf("[download:remote] error! %s", err)
+            return "", errors.New("Error downloading remote")
+        }
+        defer resp.Body.Close()
+
+        body, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            log.Printf("[download:remote] error on download! %s", err)
+            return "", errors.New("Error while downloading remote")
+        }
+
+        return string(body), nil
+    }
+
+    return "", errors.New(fmt.Sprintf("[download:remote] Invalid remote type. %d remote=%s", remoteType, remote))
 }
 
 func updateSingleRepo(c *Main, reponame string, repo Repo) {
@@ -71,9 +98,12 @@ func updateSingleRepo(c *Main, reponame string, repo Repo) {
         // TODO: download patches and all
         // Slow Mode does not work with FILE
     } else {
-        dbdata := downloadRemote(remoteType, remote)
-        // Write new db data
+        dbdata, err := downloadRemote(remoteType, remote)
+        if err != nil {
+            log.Fatalf("Failure downloading remote. %s", err)
+        }
 
+        // Write new db data
         repopath := getRepoDBPath(c, reponame)
         ioutil.WriteFile(repopath, []byte(dbdata), 0700)
     }
