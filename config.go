@@ -32,7 +32,7 @@ CheckSignature = false
     Remote = "https://localhost:6969"
 
     # [repo.myAss] # this can be any path
-    # Remote = file:///home/lunae/pactap/myass
+    # Remote = file://~/pactap/myass
 `
 
 type Repo struct {
