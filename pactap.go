@@ -47,6 +47,22 @@ func main(){
         return
     }
 
+    var bigOpts = make([]bool, 7)
+    bigOpts[0] = opts.Database
+    bigOpts[1] = opts.Query
+    bigOpts[2] = opts.Remove
+    bigOpts[3] = opts.Sync
+    bigOpts[4] = opts.Deptest
+    bigOpts[5] = opts.Upgrade
+    bigOpts[6] = opts.Files
+
+    var appliedBigOpts = Filter(bigOpts)
+
+    if len(appliedBigOpts) != 1 {
+        fmt.Printf("One big option is required. See -? for a list of options.")
+        return
+    }
+
     // TODO: Use the opts for something
     fmt.Printf("Opt Database %t\n", opts.Database)
     fmt.Printf("Opt Query %t\n", opts.Query)
@@ -56,4 +72,15 @@ func main(){
     conf := ReadConfig("~/.pactap/config.toml")
     fmt.Println(*conf)
     // TODO: We should start reading our db files
+}
+
+
+func Filter(vs []bool,) []bool {
+    vsf := make([]bool, 0)
+    for _, v := range vs {
+        if v {
+            vsf = append(vsf, v)
+        }
+    }
+    return vsf
 }
