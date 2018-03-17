@@ -5,8 +5,15 @@ import (
     "os"
 )
 
+const VERSION string = "0.0.1"
+
 func usage(){
     fmt.Printf("usage: pactap [main operators] [...]\n")
+}
+
+func version(){
+    fmt.Printf("Pactap v%s\n" +
+               "Copyright (C) 2018 Luna Mendes\n", VERSION)
 }
 
 func main(){
@@ -15,15 +22,8 @@ func main(){
         return
     }
 
-    op := os.Args[1]
-    if op[0] != '-' {
-        usage()
-        return
-    }
-
-    mainop := string(op[1])
-    // Depending of mainop being S, Q, whatever
-    // we do our operation.
-
-    fmt.Printf(mainop)
+    // TODO: We should start reading our config files
+    conf := ReadConfig("/home/luna/.pactap/config.toml")
+    fmt.Println(*conf)
+    // TODO: We should start reading our db files
 }
