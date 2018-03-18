@@ -4,6 +4,7 @@ import (
     "fmt"
     "os"
     "path/filepath"
+    "runtime"
 
     "github.com/jessevdk/go-flags"
     "github.com/mitchellh/go-homedir"
@@ -76,7 +77,13 @@ func main(){
         panic(err)
     }
 
-    conf := ReadConfig(filepath.Join(homedir, ".config/pactap/config.toml"))
+    configPath := ".config/pactap/config.toml"
+
+    if runtime.GOOS == "darwin" {
+        configPath = "Library/Application Support/pactap/config.toml"
+    }
+
+    conf := ReadConfig(filepath.Join(homedir, configPath))
     fmt.Println("raw config:", *conf)
 
     // Start main program state
