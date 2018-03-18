@@ -76,7 +76,7 @@ func main(){
         panic(err)
     }
 
-    conf := ReadConfig(filepath.Join(homedir, ".pactap/config.toml"))
+    conf := ReadConfig(filepath.Join(homedir, ".config/pactap/config.toml"))
     fmt.Println("raw config:", *conf)
 
     // Start main program state
