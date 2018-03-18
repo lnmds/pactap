@@ -77,10 +77,20 @@ func main(){
     }
 
     conf := ReadConfig(filepath.Join(homedir, ".pactap/config.toml"))
-    fmt.Println(*conf)
+    fmt.Println("raw config:", *conf)
 
-    // TODO: We should start reading our db files
-    updateRepos(conf)
+    // Start main program state
+    state := &State{
+        Config: conf,
+        RepoConfig: conf.Repos,
+    }
+
+    fmt.Println("raw state", state)
+
+    defer state.Close()
+
+    // TODO: We should start reading our db files, IF ANY
+    UpdateRepos(conf)
 
     // TODO: operate upon args
 }

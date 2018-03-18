@@ -76,7 +76,7 @@ func downloadRemote(remoteType RemoteType, remote string) (string, error) {
     return "", errors.New(fmt.Sprintf("[download:remote] Invalid remote type. %d remote=%s", remoteType, remote))
 }
 
-func updateSingleRepo(c *Main, reponame string, repo Repo) {
+func UpdateSingleRepo(c *Main, reponame string, repo Repo) {
     // First, we check what protocol is the repo using
     // as a remote.
 
@@ -94,9 +94,19 @@ func updateSingleRepo(c *Main, reponame string, repo Repo) {
         return
     }
 
-    if c.SlowMode {
+    if c.SlowMode && remoteType != FILE {
         // TODO: download patches and all
         // Slow Mode does not work with FILE
+
+        /*
+        latestPatch := fetchPatchLatest(reponame)
+        db := RepoOpen(c, reponame)
+        version := getRepoDBVersion(db)
+
+        for idx := range verison, latestPatch {
+            downloadAndApplyPatch(remoteType, remote, idx)
+        }
+        */
     } else {
         dbdata, err := downloadRemote(remoteType, remote)
         if err != nil {
@@ -109,13 +119,10 @@ func updateSingleRepo(c *Main, reponame string, repo Repo) {
     }
 }
 
-func updateRepos(c *Main) {
-    // Query the interwebs.
-    repos := getRepos(c)
-
-    for reponame, repo := range repos {
+func UpdateRepos(c *Main) {
+    log.Printf("Starting repository update")
+    for reponame, repo := range c.Repos {
         log.Printf("Updating repo '%s'", reponame)
-
-        updateSingleRepo(c, reponame, repo)
+        UpdateSingleRepo(c, reponame, repo)
     }
 }

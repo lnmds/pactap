@@ -78,10 +78,10 @@ type Main struct {
 func ReadConfig(path string) *Main {
     var c Main
 
-    log.Printf("Loading config from '%s'", path)
+    log.Printf("[config:load] path '%s'", path)
     data, err := ioutil.ReadFile(path)
     if err != nil {
-        log.Printf("Using fallback")
+        log.Printf("[config] Using fallback")
 
         data = []byte(defaultConfig)
         _ = ioutil.WriteFile(path, data, 0755)
@@ -91,6 +91,7 @@ func ReadConfig(path string) *Main {
         panic(err)
     }
 
+    log.Printf("[config] success")
     return &c
 }
 
