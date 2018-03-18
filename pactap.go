@@ -5,7 +5,7 @@ import (
     "os"
     "path/filepath"
     "runtime"
-    "strings"
+    "log"
 
     "github.com/jessevdk/go-flags"
     "github.com/mitchellh/go-homedir"
@@ -62,6 +62,8 @@ func main(){
         RepoConfig: conf.Repos,
     }
 
+    state.Start()
+
     defer state.Close()
 
     // TODO: initialize repos
@@ -69,9 +71,15 @@ func main(){
     if operator == "update" {
         UpdateRepos(conf)
     } else if operator == "install" {
-        packages := args[1:]
-        fmt.Printf("packages to install: %s\n", strings.Join(packages, " "))
-        // TODO: install lmao
+        to_find := args[1:]
+
+        packages, err := FindPackages(state, to_find)
+        if err != nil {
+            log.Printf("Oopsie Doosie! We made a Fucky Wucky! %s", err)
+            return
+        }
+
+        log.Println(packages)
     } else {
         fmt.Printf("Invalid operator: %s\n", operator)
     }

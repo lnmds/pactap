@@ -1,0 +1,9 @@
+package: "true"
+version: 0.0.1
+build: 1
+
+scripts:
+    - ./ass.sh
+
+post:
+    - ./post_install_warnings.sh

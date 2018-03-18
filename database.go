@@ -10,19 +10,20 @@ type Repository struct {
     db *sql.DB
 }
 
-/* open a repo db file */
-func RepoOpen(c *Main, reponame string) Repository {
+func RepoOpen(c *Main, reponame string) (Repository, error) {
     dbpath := getRepoDBPath(c, reponame)
+
+    log.Printf("Connecting to repo '%s'", reponame)
     db, err := sql.Open("sqlite3", dbpath)
 
     if err != nil {
         log.Fatal(err)
-        panic(err)
+        return Repository{}, err
     }
 
     return Repository{
         db: db,
-    }
+    }, nil
 }
 
 func FindPackage(repo Repository, pkg_name string) (Package, error) {
@@ -30,7 +31,7 @@ func FindPackage(repo Repository, pkg_name string) (Package, error) {
     stmt, err := db.Prepare("select * from packages where name=?")
 
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return Package{}, err
     }
 
@@ -42,7 +43,7 @@ func FindPackage(repo Repository, pkg_name string) (Package, error) {
     err = stmt.QueryRow(pkg_name).Scan(&name, &version, &build)
 
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return Package{}, err
     }
 
@@ -52,8 +53,3 @@ func FindPackage(repo Repository, pkg_name string) (Package, error) {
         build: build,
     }, nil
 }
-
-func CloseDb(db *sql.DB) {
-    db.Close()
-}
-
