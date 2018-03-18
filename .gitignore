@@ -531,3 +531,6 @@ __pycache__/
 
 
 # End of https://www.gitignore.io/api/go,vim,emacs,intellij,sublimetext,intellij+all,visualstudio,visualstudiocode
+
+# just makin sure
+*.db

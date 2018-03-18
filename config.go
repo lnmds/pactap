@@ -3,13 +3,11 @@ package main
 import (
     "io/ioutil"
     "log"
-    "github.com/BurntSushi/toml"
+    "github.com/pelletier/go-toml"
 )
 
-const defaultConfig string = `
-# pactap's main configuration file
+const defaultConfig string = `# pactap's main configuration file
 
-[main]
 # Where should things like /bin and /lib go to?
 MainPath = "~/.pactap"
 
@@ -79,17 +77,20 @@ func ReadConfig(path string) *Main {
     var c Main
 
     log.Printf("[config:load] path '%s'", path)
+
     data, err := ioutil.ReadFile(path)
     if err != nil {
         log.Printf("[config] Using fallback")
 
         data = []byte(defaultConfig)
-        _ = ioutil.WriteFile(path, data, 0755)
+        err = ioutil.WriteFile(path, data, 0755)
+
+        if err != nil {
+            log.Fatalf("Failed to write to conf file. %s", err)
+        }
     }
 
-    if _, err := toml.Decode(string(data), &c); err != nil {
-        panic(err)
-    }
+    toml.Unmarshal(data, &c)
 
     log.Printf("[config] success")
     return &c

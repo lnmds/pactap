@@ -33,3 +33,12 @@ mkdir -p ~/.pactap
 go get -u github.com/lnmds/pactap
 go install github.com/lnmds/pactap
 ```
+
+# Repository management
+
+## how do make repo???
+
+the basic is making a repository db file:
+```bash
+sqlite3 -init pkgtools/repo_start.sql my_repo_file.db
+```

@@ -8,6 +8,8 @@ import (
     "errors"
     "net/http"
     "strings"
+
+    "github.com/mitchellh/go-homedir"
 )
 
 type Repos map[string]Repo
@@ -29,7 +31,13 @@ func getRepos(c *Main) Repos {
 
 func getRepoDBPath(c *Main, reponame string) string {
     // e.g ~/.pactap/db/repo_reponame.db
-    return filepath.Join(c.MainPath, fmt.Sprintf("db/repo_%s.db", reponame))
+    exp, err := homedir.Expand(c.MainPath)
+
+    if err != nil {
+        log.Panic(err)
+    }
+
+    return filepath.Join(exp, fmt.Sprintf("db/%s.db", reponame))
 }
 
 func getRemoteType(remote string) RemoteType {
@@ -50,9 +58,19 @@ func downloadRemote(remoteType RemoteType, remote string) (string, error) {
     log.Printf("[download:remote] '%s'", remote)
 
     if remoteType == FILE {
-        data, err := ioutil.ReadFile(remote)
+        remoteFiltered := strings.TrimPrefix(remote, "file://")
+
+        remoteFiltered, err := homedir.Expand(remoteFiltered)
+
         if err != nil {
-            return "", errors.New("Failure reading from remote path")
+            return "", err
+        }
+
+        log.Printf("[download:file] expanded path is '%s'", remoteFiltered)
+
+        data, err := ioutil.ReadFile(remoteFiltered)
+        if err != nil {
+            return "", err
         }
         return string(data), err
 
@@ -115,7 +133,14 @@ func UpdateSingleRepo(c *Main, reponame string, repo Repo) {
 
         // Write new db data
         repopath := getRepoDBPath(c, reponame)
-        ioutil.WriteFile(repopath, []byte(dbdata), 0700)
+
+        log.Printf("Writing to '%s'", repopath)
+        err = ioutil.WriteFile(repopath, []byte(dbdata), 0700)
+        if err != nil {
+            log.Fatalf("Error writing to repo db! %s", err)
+        }
+
+        log.Printf("Updated repo %s, success!", reponame)
     }
 }
 
