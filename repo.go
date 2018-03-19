@@ -25,6 +25,13 @@ const (
 	INVALID
 )
 
+var remotePrefixes = map[string]RemoteType{
+	"http://":  HTTP,
+	"https://": HTTPS,
+	"ftp://":   FTP,
+	"file://":  FILE,
+}
+
 func getRepos(c *Main) Repos {
 	return c.Repos
 }
@@ -41,17 +48,12 @@ func getRepoDBPath(c *Main, reponame string) string {
 }
 
 func getRemoteType(remote string) RemoteType {
-	if strings.HasPrefix(remote, "http://") {
-		return HTTP
-	} else if strings.HasPrefix(remote, "https://") {
-		return HTTPS
-	} else if strings.HasPrefix(remote, "ftp://") {
-		return FTP
-	} else if strings.HasPrefix(remote, "file://") {
-		return FILE
-	} else {
-		return INVALID
+	for prefix, remoteType := range remotePrefixes {
+		if strings.HasPrefix(remote, prefix) {
+			return remoteType
+		}
 	}
+	return INVALID
 }
 
 func downloadRemote(remoteType RemoteType, remote string) (string, error) {
@@ -91,7 +93,7 @@ func downloadRemote(remoteType RemoteType, remote string) (string, error) {
 		return string(body), nil
 	}
 
-	return "", errors.New(fmt.Sprintf("[download:remote] Invalid remote type. %d remote=%s", remoteType, remote))
+	return "", fmt.Errorf("[download:remote] Invalid remote type. %d remote=%s", remoteType, remote)
 }
 
 func UpdateSingleRepo(c *Main, reponame string, repo Repo) {
