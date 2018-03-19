@@ -93,7 +93,7 @@ func downloadRemote(remoteType RemoteType, remote string) (string, error) {
 		return string(body), nil
 	}
 
-	return "", errors.New(fmt.Sprintf("[download:remote] Invalid remote type. %d remote=%s", remoteType, remote))
+	return "", fmt.Errorf("[download:remote] Invalid remote type. %d remote=%s", remoteType, remote)
 }
 
 func UpdateSingleRepo(c *Main, reponame string, repo Repo) {
