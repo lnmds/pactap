@@ -1,9 +1,9 @@
 package main
 
 import (
-    "io/ioutil"
-    "log"
-    "github.com/pelletier/go-toml"
+	"github.com/pelletier/go-toml"
+	"io/ioutil"
+	"log"
 )
 
 const defaultConfig string = `# pactap's main configuration file
@@ -45,54 +45,53 @@ CheckSignature = false
 `
 
 type Repo struct {
-    Remote string
+	Remote string
 
-    RemoteList string
+	RemoteList string
 }
 
 type Main struct {
-    // Main path for EVERYTHING. default "~/.pactap"
-    MainPath string
+	// Main path for EVERYTHING. default "~/.pactap"
+	MainPath string
 
-    // enable debug log?
-    Debug bool
+	// enable debug log?
+	Debug bool
 
-    // Packages to ignore updates from
-    Ignore []string
+	// Packages to ignore updates from
+	Ignore []string
 
-    // enable pactap's slow mode
-    SlowMode bool
+	// enable pactap's slow mode
+	SlowMode bool
 
-    // check hashes of shit, default false
-    // USED ONLY FOR PACKAGE BUILDING
-    CheckIntegrity bool
+	// check hashes of shit, default false
+	// USED ONLY FOR PACKAGE BUILDING
+	CheckIntegrity bool
 
-    // TODO: do we really do this with gpg and the shit
-    CheckSignature bool
+	// TODO: do we really do this with gpg and the shit
+	CheckSignature bool
 
-    Repos map[string]Repo `toml:"repo"`
+	Repos map[string]Repo `toml:"repo"`
 }
 
 func ReadConfig(path string) *Main {
-    var c Main
+	var c Main
 
-    log.Printf("[config:load] path '%s'", path)
+	log.Printf("[config:load] path '%s'", path)
 
-    data, err := ioutil.ReadFile(path)
-    if err != nil {
-        log.Printf("[config] Using fallback")
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Printf("[config] Using fallback")
 
-        data = []byte(defaultConfig)
-        err = ioutil.WriteFile(path, data, 0755)
+		data = []byte(defaultConfig)
+		err = ioutil.WriteFile(path, data, 0755)
 
-        if err != nil {
-            log.Fatalf("Failed to write to conf file. %s", err)
-        }
-    }
+		if err != nil {
+			log.Fatalf("Failed to write to conf file. %s", err)
+		}
+	}
 
-    toml.Unmarshal(data, &c)
+	toml.Unmarshal(data, &c)
 
-    log.Printf("[config] success")
-    return &c
+	log.Printf("[config] success")
+	return &c
 }
-
