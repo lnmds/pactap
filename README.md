@@ -20,10 +20,7 @@ we will, very likely, use http://linuxbrew.sh/ over this project.
 
 ```bash
 # make sure $GOPATH/bin is in your path
-go install github.com/lnmds/pactap
-
-mkdir -p ~/.pactap
-
+mkdir -p ~/.pactap && go get -u github.com/lnmds/pactap
 # ??? profit ???
 ```
 
@@ -31,7 +28,6 @@ mkdir -p ~/.pactap
 
 ```bash
 go get -u github.com/lnmds/pactap
-go install github.com/lnmds/pactap
 ```
 
 # Repository management
