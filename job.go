@@ -1,28 +1,28 @@
 package main
 
 /*
-    Job management utilities.
+   Job management utilities.
 */
 
 type JobState int
 
 const (
-    SCHEDULED = iota
-    RUNNING
-    DONE
-    FAILURE
+	SCHEDULED = iota
+	RUNNING
+	DONE
+	FAILURE
 )
 
 type Job struct {
-    name string
+	name string
 
-    description string
+	description string
 
-    state JobState
+	state JobState
 }
 
 type JobManager struct {
-    name string
+	name string
 
-    jobs []Job
+	jobs []Job
 }
