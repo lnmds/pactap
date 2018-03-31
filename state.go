@@ -2,11 +2,14 @@ package main
 
 import (
 	"log"
+	"path/filepath"
 )
 
 // Main program state
 type State struct {
 	Config *Main
+
+	Local LocalDatabase
 
 	// Raw repository configuration
 	RepoConfig Repos
@@ -29,6 +32,15 @@ func (ps *State) Start() {
 
 		ps.Repos[rpname] = repo
 	}
+
+	localPath := filepath.Join(ps.Config.MainPath, "local.db")
+	local, err := LocalOpen(localPath)
+	if err != nil {
+		log.Printf("Oops! %s", err)
+		return
+	}
+
+	ps.Local = local
 }
 
 func (ps *State) Close() {

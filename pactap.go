@@ -80,6 +80,16 @@ func main() {
 		}
 
 		log.Println(packages)
+	} else if operator == "remove" {
+		to_remove := args[1:]
+
+		packages, err := FindLocalPackages(state, to_remove)
+		if err != nil {
+			log.Printf("Failed to find packages in local repo. %s", err)
+			return
+		}
+
+		log.Println(packages)
 	} else {
 		fmt.Printf("Invalid operator: %s\n", operator)
 	}

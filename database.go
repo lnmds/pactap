@@ -10,6 +10,10 @@ type Repository struct {
 	db *sql.DB
 }
 
+type LocalDatabase struct {
+	db *sql.DB
+}
+
 func RepoOpen(c *Main, reponame string) (Repository, error) {
 	dbpath := getRepoDBPath(c, reponame)
 
@@ -22,6 +26,18 @@ func RepoOpen(c *Main, reponame string) (Repository, error) {
 	}
 
 	return Repository{
+		db: db,
+	}, nil
+}
+
+func LocalOpen(path string) (LocalDatabase, error) {
+	db, err := sql.Open("sqlite3", path)
+
+	if err != nil {
+		return LocalDatabase{}, err
+	}
+
+	return LocalDatabase{
 		db: db,
 	}, nil
 }

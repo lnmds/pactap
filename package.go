@@ -36,11 +36,32 @@ func GetPackage(ps *State, pkg_name string) (Package, error) {
 	return Package{}, errors.New(fmt.Sprintf("package '%s' not found", pkg_name))
 }
 
+func GetLocalPackage(ps *State, pkg_name string) (Package, error) {
+	// TODO: implement
+	return Package{}, errors.New("Not implemented")
+}
+
 func FindPackages(ps *State, packages []string) ([]Package, error) {
 	pkgs := make([]Package, 100)
 
 	for idx := range packages {
 		pkgstruct, err := GetPackage(ps, packages[idx])
+
+		if err != nil {
+			return pkgs, err
+		}
+
+		pkgs = append(pkgs, pkgstruct)
+	}
+
+	return pkgs, nil
+}
+
+func FindLocalPackages(ps *State, packages []string) ([]Package, error) {
+	pkgs := make([]Package, 100)
+
+	for idx := range packages {
+		pkgstruct, err := GetLocalPackage(ps, packages[idx])
 
 		if err != nil {
 			return pkgs, err
